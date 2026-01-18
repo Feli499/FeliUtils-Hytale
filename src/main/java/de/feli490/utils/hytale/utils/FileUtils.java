@@ -7,6 +7,11 @@ public class FileUtils {
 
     private FileUtils() {}
 
+    public static Path loadOrCreateEmptyJson(Path directory, String fileName) {
+        Path filePath = directory.resolve(fileName);
+        return loadOrCreateEmptyJson(filePath);
+    }
+
     public static Path loadOrCreateEmptyJson(Path filePath) {
         var file = filePath.toFile();
         if (!file.exists()) {
