@@ -23,8 +23,6 @@ public class JsonPlayerData {
                         .add()
                         .build();
 
-    public static final ArrayCodec<JsonPlayerData> ARRAY_CODEC = new ArrayCodec<>(CODEC, JsonPlayerData[]::new, JsonPlayerData::new);
-
     private UUID uuid;
 
     private List<KnownPlayerName> knownPlayerNames;

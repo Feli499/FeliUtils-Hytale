@@ -27,7 +27,7 @@ public class PlayerReadySavePlayerDataEventListener implements Consumer<PlayerRe
                        try {
                            playerDataSaver.savePlayerData(playerRef.getUuid(), player.getDisplayName());
                        } catch (IOException e) {
-                           logger.at(Level.WARNING)
+                           logger.at(Level.SEVERE)
                                  .withCause(e)
                                  .log("Failed to save player data for player: " + player.getDisplayName() + " (" + playerRef.getUuid()
                                               + ")");

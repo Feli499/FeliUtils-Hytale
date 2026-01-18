@@ -1,5 +1,8 @@
 package de.feli490.utils.hytale.playerdata.json;
 
+import com.hypixel.hytale.codec.KeyedCodec;
+import com.hypixel.hytale.codec.builder.BuilderCodec;
+import com.hypixel.hytale.codec.codecs.array.ArrayCodec;
 import com.hypixel.hytale.codec.util.RawJsonReader;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.server.core.util.BsonUtil;
@@ -9,7 +12,6 @@ import de.feli490.utils.hytale.utils.FileUtils;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -29,8 +31,13 @@ public class SingleFileJsonPlayerDataLoader extends AbstractPlayerDataLoader {
         this.logger = logger;
         playerDataJson = FileUtils.loadOrCreateEmptyJson(filePath, "playerdata.json");
         playerData = new HashMap<>();
+        playerDataByLastName = new HashMap<>();
 
-        JsonPlayerData[] jsonPlayerData = RawJsonReader.readSync(playerDataJson, JsonPlayerData.ARRAY_CODEC, logger);
+        JsonPlayerDataHolder jsonPlayerDataHolder = RawJsonReader.readSync(playerDataJson, JsonPlayerDataHolder.CODEC, logger);
+        JsonPlayerData[] jsonPlayerData = jsonPlayerDataHolder.getJsonPlayerDataArray();
+        if (jsonPlayerData == null)
+            return;
+
         for (JsonPlayerData jsonPlayerDatum : jsonPlayerData) {
             playerData.put(jsonPlayerDatum.getUuid(), jsonPlayerDatum);
         }
@@ -46,7 +53,6 @@ public class SingleFileJsonPlayerDataLoader extends AbstractPlayerDataLoader {
                 lastKnownNames.get(name).add(new Pair<>(knownPlayerName.getFirstSeen(), jsonPlayerDatum));
             }
 
-        HashMap<String, JsonPlayerData> playerDataByLastName = new HashMap<>();
         for (Map.Entry<String, List<Pair<Long, JsonPlayerData>>> entry : lastKnownNames.entrySet()) {
             String name = entry.getKey();
             List<Pair<Long, JsonPlayerData>> value = entry.getValue();
@@ -55,11 +61,10 @@ public class SingleFileJsonPlayerDataLoader extends AbstractPlayerDataLoader {
             Pair<Long, JsonPlayerData> first = value.getFirst();
             playerDataByLastName.put(name, first.getSecond());
         }
-        this.playerDataByLastName = playerDataByLastName;
     }
 
     private void save() throws IOException {
-        BsonUtil.writeSync(playerDataJson, JsonPlayerData.ARRAY_CODEC, playerData.values().toArray(new JsonPlayerData[0]), logger);
+        BsonUtil.writeSync(playerDataJson, JsonPlayerDataHolder.CODEC, JsonPlayerDataHolder.create(playerData.values()), logger);
     }
 
     @Override
@@ -103,5 +108,31 @@ public class SingleFileJsonPlayerDataLoader extends AbstractPlayerDataLoader {
         jsonPlayerData.addKnownPlayerName(name);
         playerDataByLastName.put(name, jsonPlayerData);
         return true;
+    }
+
+    private static class JsonPlayerDataHolder {
+
+        public static final ArrayCodec<JsonPlayerData> ARRAY_CODEC = new ArrayCodec<>(JsonPlayerData.CODEC,
+                                                                                      JsonPlayerData[]::new,
+                                                                                      JsonPlayerData::new);
+        public static final BuilderCodec<JsonPlayerDataHolder> CODEC = //
+                BuilderCodec.builder(JsonPlayerDataHolder.class, JsonPlayerDataHolder::new)
+                            .append(new KeyedCodec<>("Data", JsonPlayerDataHolder.ARRAY_CODEC),
+                                    (jsonPlayerDataHolder, array, extraInfo) -> jsonPlayerDataHolder.jsonPlayerDataArray = array,
+                                    (jsonPlayerDataHolder, extraInfo) -> jsonPlayerDataHolder.getJsonPlayerDataArray())
+                            .add()
+                            .build();
+
+        private JsonPlayerData[] jsonPlayerDataArray;
+
+        public JsonPlayerData[] getJsonPlayerDataArray() {
+            return jsonPlayerDataArray;
+        }
+
+        public static JsonPlayerDataHolder create(Collection<JsonPlayerData> jsonPlayerDataCollection) {
+            JsonPlayerDataHolder jsonPlayerDataHolder = new JsonPlayerDataHolder();
+            jsonPlayerDataHolder.jsonPlayerDataArray = jsonPlayerDataCollection.toArray(new JsonPlayerData[0]);
+            return jsonPlayerDataHolder;
+        }
     }
 }

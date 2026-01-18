@@ -38,10 +38,8 @@ public class FeliUtilsPlugin extends JavaPlugin {
 
     @Override
     protected void start() {
-
-        PlayerReadySavePlayerDataEventListener playerReadySavePlayerDataEventListener = new PlayerReadySavePlayerDataEventListener(getLogger(),
-                                                                                                                                   playerDataSaver);
-        getEventRegistry().registerGlobal(PlayerReadyEvent.class, playerReadySavePlayerDataEventListener);
+        
+        getEventRegistry().registerGlobal(PlayerReadyEvent.class, new PlayerReadySavePlayerDataEventListener(getLogger(), playerDataSaver));
 
         getLogger().at(Level.INFO).log("FeliUtilsPlugin is started!");
     }
