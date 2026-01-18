@@ -69,17 +69,30 @@ public class SingleFileJsonPlayerDataLoader extends AbstractPlayerDataLoader {
 
     @Override
     public String getLastPlayerName(UUID uuid) {
-        return playerData.get(uuid).getLastKnownName().getName();
+        JsonPlayerData jsonPlayerData = playerData.get(uuid);
+        if (jsonPlayerData == null)
+            return null;
+        return jsonPlayerData.getLastKnownName()
+                             .getName();
     }
 
     @Override
     public UUID getPlayerUUIDByLastName(String lastName) {
-        return playerDataByLastName.get(lastName).getUuid();
+        JsonPlayerData jsonPlayerData = playerDataByLastName.get(lastName);
+        if (jsonPlayerData == null)
+            return null;
+        return jsonPlayerData.getUuid();
     }
 
     @Override
     public Collection<String> getKnownPlayerNames(UUID uuid) {
-        return playerData.get(uuid).getKnownPlayerNames().stream().map(JsonPlayerData.KnownPlayerName::getName).toList();
+        JsonPlayerData jsonPlayerData = playerData.get(uuid);
+        if (jsonPlayerData == null)
+            return null;
+        return jsonPlayerData.getKnownPlayerNames()
+                             .stream()
+                             .map(JsonPlayerData.KnownPlayerName::getName)
+                             .toList();
     }
 
     @Override
