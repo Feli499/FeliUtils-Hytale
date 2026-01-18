@@ -85,6 +85,11 @@ public class SingleFileJsonPlayerDataLoader extends AbstractPlayerDataLoader {
     }
 
     @Override
+    public Collection<UUID> getAllKnownPlayerUUIDs() {
+        return playerData.keySet();
+    }
+
+    @Override
     public Collection<String> getKnownPlayerNames(UUID uuid) {
         JsonPlayerData jsonPlayerData = playerData.get(uuid);
         if (jsonPlayerData == null)

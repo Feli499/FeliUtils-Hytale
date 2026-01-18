@@ -10,4 +10,6 @@ public interface PlayerDataProvider {
     UUID getPlayerUUIDByLastName(String lastName);
 
     Collection<String> getKnownPlayerNames(UUID uuid);
+
+    Collection<UUID> getAllKnownPlayerUUIDs();
 }
