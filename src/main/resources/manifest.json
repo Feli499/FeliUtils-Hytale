@@ -1,0 +1,20 @@
+{
+  "Group": "Feli490.de",
+  "Name": "FeliUtils",
+  "Version": "1.0.0",
+  "Description": "",
+  "Authors": [
+    {
+      "Name": "Maik 'Feli490' Ehemann",
+      "Email": "hytale@feli490.de",
+      "Url": "https://feli490.de"
+    }
+  ],
+  "Website": "https://feli490.de",
+  "Main": "de.feli490.utils.hytale.FeliUtilsPlugin",
+  "ServerVersion": "*",
+  "Dependencies": {},
+  "OptionalDependencies": {},
+  "DisabledByDefault": false,
+  "IncludesAssetPack": false
+}
