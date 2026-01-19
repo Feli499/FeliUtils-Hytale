@@ -7,6 +7,8 @@ public interface PlayerDataProvider {
 
     String getLastPlayerName(UUID uuid);
 
+    boolean isKnownPlayer(UUID uuid);
+
     UUID getPlayerUUIDByLastName(String lastName);
 
     Collection<String> getKnownPlayerNames(UUID uuid);
