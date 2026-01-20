@@ -1,7 +1,7 @@
 {
   "Group": "Feli490.de",
   "Name": "FeliUtils",
-  "Version": "1.0.0",
+  "Version": "${artifact.version}",
   "Description": "",
   "Authors": [
     {
