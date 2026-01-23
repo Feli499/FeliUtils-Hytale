@@ -1,8 +1,10 @@
 package de.feli490.utils.hytale;
 
+import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.server.core.event.events.player.PlayerReadyEvent;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
+import com.hypixel.hytale.server.core.plugin.PluginManager;
 import de.feli490.utils.hytale.events.PlayerReadySavePlayerDataEventListener;
 import de.feli490.utils.hytale.playerdata.PlayerDataSaver;
 import de.feli490.utils.hytale.playerdata.json.SingleFileJsonPlayerDataLoader;
@@ -13,6 +15,7 @@ import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 public class FeliUtilsPlugin extends JavaPlugin {
 
     private PlayerDataSaver playerDataSaver;
+    private FeliUtilsConfig config;
 
     public FeliUtilsPlugin(@NonNullDecl JavaPluginInit init) {
         super(init);
@@ -21,19 +24,33 @@ public class FeliUtilsPlugin extends JavaPlugin {
     @Override
     protected void setup() {
 
+        HytaleLogger logger = getLogger();
+        try {
+            config = FeliUtilsConfig.load(getDataDirectory(), logger);
+        } catch (IOException e) {
+            logger.at(Level.SEVERE)
+                  .withCause(e)
+                  .log("Failed to load config.json... Shutting plugin down.");
+            shutdownPlugin();
+            return;
+        }
+
         try {
 
-            SingleFileJsonPlayerDataLoader playerDataProvider = new SingleFileJsonPlayerDataLoader(getLogger(), getDataDirectory());
+            SingleFileJsonPlayerDataLoader playerDataProvider = new SingleFileJsonPlayerDataLoader(logger, getDataDirectory());
             PlayerDataProviderInstance.set(playerDataProvider);
             playerDataSaver = playerDataProvider;
 
         } catch (IOException e) {
-            getLogger().at(Level.SEVERE)
-                       .withCause(e)
-                       .log("Failed to initialize player data loader");
+            logger.at(Level.SEVERE)
+                  .withCause(e)
+                  .log("Failed to initialize player data loader... Shutting plugin down.");
+            shutdownPlugin();
+            return;
         }
 
-        getLogger().at(Level.INFO).log("FeliUtilsPlugin is setup!");
+        logger.at(Level.INFO)
+              .log("FeliUtilsPlugin is setup!");
     }
 
     @Override
@@ -42,6 +59,11 @@ public class FeliUtilsPlugin extends JavaPlugin {
         getEventRegistry().registerGlobal(PlayerReadyEvent.class, new PlayerReadySavePlayerDataEventListener(getLogger(), playerDataSaver));
 
         getLogger().at(Level.INFO).log("FeliUtilsPlugin is started!");
+    }
+
+    private void shutdownPlugin() {
+        PluginManager.get()
+                     .unload(getIdentifier());
     }
 
     @Override

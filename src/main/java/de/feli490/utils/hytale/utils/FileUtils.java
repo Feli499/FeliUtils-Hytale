@@ -28,6 +28,7 @@ public class FileUtils {
             return filePath;
         }
         String content = new String(defaultContent.readAllBytes());
+        defaultContent.close();
         return loadOrCreate(filePath, content);
     }
 
