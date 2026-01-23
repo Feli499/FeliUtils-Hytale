@@ -2,6 +2,7 @@ package de.feli490.utils.hytale.utils;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -22,6 +23,18 @@ public class FileUtils {
         return loadOrCreateEmptyArray(filePath);
     }
 
+    public static Path loadOrCreateJson(Path filePath, InputStream defaultContent) throws IOException {
+        if (Files.exists(filePath)) {
+            return filePath;
+        }
+        String content = new String(defaultContent.readAllBytes());
+        return loadOrCreate(filePath, content);
+    }
+
+    public static Path loadOrCreateJson(Path directory, String fileName, InputStream defaultContent) throws IOException {
+        return loadOrCreateJson(directory.resolve(fileName), defaultContent);
+    }
+
     public static Path loadOrCreateEmptyJson(Path path) throws IOException {
         return loadOrCreate(path, EMPTY_JSON);
     }
@@ -40,9 +53,9 @@ public class FileUtils {
 
         if (!file.exists()) {
             file.createNewFile();
-            var writer = new FileWriter(file);
-            writer.write(content);
-            writer.close();
+            try (FileWriter writer = new FileWriter(file)) {
+                writer.write(content);
+            }
         }
         return file.toPath();
     }
