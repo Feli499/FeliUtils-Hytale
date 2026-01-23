@@ -109,7 +109,7 @@ public class SingleFileJsonPlayerDataLoader extends AbstractPlayerDataLoader {
     }
 
     @Override
-    public void savePlayerData(UUID playerUUID, String lastName) throws IOException {
+    public void addPlayerNameIfUnknown(UUID playerUUID, String lastName) throws IOException {
 
         boolean needsSaving = handlePlayerDataIfNecessary(playerUUID, lastName);
         if(!needsSaving)

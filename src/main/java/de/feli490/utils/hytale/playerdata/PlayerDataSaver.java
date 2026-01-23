@@ -5,5 +5,5 @@ import java.util.UUID;
 
 public interface PlayerDataSaver {
 
-    void savePlayerData(UUID playerUUID, String name) throws IOException;
+    void addPlayerNameIfUnknown(UUID playerUUID, String name) throws IOException;
 }
