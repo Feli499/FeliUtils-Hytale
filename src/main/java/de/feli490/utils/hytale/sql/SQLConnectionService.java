@@ -10,6 +10,8 @@ public class SQLConnectionService {
     }
 
     public static SQLConnection get() {
+        if (!hasConnection())
+            return null;
         return SQLConnectionService.INSTANCE.loadConnection();
     }
 
