@@ -25,7 +25,7 @@ public class MultiJsonFileStrategy implements JsonFileStrategy {
 
     @Override
     public void deleteData() throws IOException {
-        Files.delete(directory);
+        FileUtils.deleteDirectoryRecursive(directory);
     }
 
     @Override
@@ -49,7 +49,7 @@ public class MultiJsonFileStrategy implements JsonFileStrategy {
 
     @Override
     public void save(JsonPlayerData jsonPlayerData) throws IOException {
-        Path path = FileUtils.loadOrCreateEmptyJson(directory.resolve(jsonPlayerData.getUuid() + ".json"));
+        Path path = FileUtils.loadOrCreateEmptyJson(directory.resolve(jsonPlayerData.uuid() + ".json"));
         BsonUtil.writeSync(path, JsonPlayerData.CODEC, jsonPlayerData, logger);
     }
 }

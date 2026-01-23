@@ -3,6 +3,7 @@ package de.feli490.utils.hytale.utils;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -30,6 +31,19 @@ public class FileUtils {
         String content = new String(defaultContent.readAllBytes());
         defaultContent.close();
         return loadOrCreate(filePath, content);
+    }
+
+    public static void deleteDirectoryRecursive(Path directory) throws IOException {
+
+        try (DirectoryStream<Path> paths = Files.newDirectoryStream(directory)) {
+            for (Path path : paths) {
+                if (Files.isDirectory(path)) {
+                    deleteDirectoryRecursive(path);
+                }
+                Files.deleteIfExists(path);
+            }
+        }
+        Files.deleteIfExists(directory);
     }
 
     public static Path loadOrCreateJson(Path directory, String fileName, InputStream defaultContent) throws IOException {

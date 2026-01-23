@@ -25,8 +25,10 @@ public class PlayerDataSetup {
 
     public void setupProvider() throws Exception {
 
-        if (sqlConnection != null)
-            new SqlPlayerDataLoader(sqlConnection.getFirst(), sqlConnection.getSecond());
+        SqlPlayerDataLoader sqlPlayerDataLoader = null;
+        if (sqlConnection != null) {
+            sqlPlayerDataLoader = new SqlPlayerDataLoader(logger, sqlConnection.getFirst(), sqlConnection.getSecond());
+        }
 
         SingleJsonFileStrategy singleJsonFileStrategy = new SingleJsonFileStrategy(logger, pluginDirectory);
         MultiJsonFileStrategy multiJsonFileStrategy = new MultiJsonFileStrategy(logger, pluginDirectory);
@@ -38,7 +40,17 @@ public class PlayerDataSetup {
             singleJsonFileStrategy.deleteData();
         }
 
-        JsonPlayerDataLoader jsonPlayerDataLoader = new JsonPlayerDataLoader(multiJsonFileStrategy);
-        PlayerDataProviderInstance.set(jsonPlayerDataLoader);
+        if (sqlPlayerDataLoader == null) {
+            JsonPlayerDataLoader jsonPlayerDataLoader = new JsonPlayerDataLoader(multiJsonFileStrategy);
+            PlayerDataProviderInstance.set(jsonPlayerDataLoader);
+            return;
+        }
+
+        if (multiJsonFileStrategy.hasData()) {
+            sqlPlayerDataLoader.migrateData(multiJsonFileStrategy.load());
+            multiJsonFileStrategy.deleteData();
+        }
+
+        PlayerDataProviderInstance.set(sqlPlayerDataLoader);
     }
 }

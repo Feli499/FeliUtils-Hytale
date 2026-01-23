@@ -32,19 +32,19 @@ public class JsonPlayerDataLoader extends AbstractPlayerDataLoader {
             return;
 
         for (JsonPlayerData jsonPlayerDatum : jsonPlayerData) {
-            playerData.put(jsonPlayerDatum.getUuid(), jsonPlayerDatum);
+            playerData.put(jsonPlayerDatum.uuid(), jsonPlayerDatum);
         }
 
         Map<String, List<Pair<Long, JsonPlayerData>>> lastKnownNames = new HashMap<>();
         for (JsonPlayerData jsonPlayerDatum : jsonPlayerData)
-            for (UsedNameData usedNameData : jsonPlayerDatum.getUsedNames()) {
+            for (UsedNameData usedNameData : jsonPlayerDatum.usedNames()) {
 
-                String name = usedNameData.getName();
+                String name = usedNameData.name();
                 if (!lastKnownNames.containsKey(name))
                     lastKnownNames.put(name, new ArrayList<>());
 
                 lastKnownNames.get(name)
-                              .add(new Pair<>(usedNameData.getFirstSeen(), jsonPlayerDatum));
+                              .add(new Pair<>(usedNameData.firstSeen(), jsonPlayerDatum));
             }
 
         for (Map.Entry<String, List<Pair<Long, JsonPlayerData>>> entry : lastKnownNames.entrySet()) {

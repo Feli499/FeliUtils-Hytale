@@ -18,7 +18,7 @@ public class JsonPlayerData implements PlayerData {
             BuilderCodec.builder(JsonPlayerData.class, JsonPlayerData::new)
                         .append(new KeyedCodec<>("Uuid", Codec.UUID_STRING),
                                 (jsonPlayerData, id, extraInfo) -> jsonPlayerData.uuid = id,
-                                (jsonPlayerData, extraInfo) -> jsonPlayerData.getUuid())
+                                (jsonPlayerData, extraInfo) -> jsonPlayerData.uuid())
                         .add()
                         .append(new KeyedCodec<>("KnownPlayerNames", KnownPlayerName.ARRAY_CODEC),
                                 (jsonPlayerData, lastKnownUsername, extraInfo) -> jsonPlayerData.setKnownPlayerNames(lastKnownUsername),
@@ -40,12 +40,12 @@ public class JsonPlayerData implements PlayerData {
     }
 
     @Override
-    public UUID getUuid() {
+    public UUID uuid() {
         return uuid;
     }
 
     @Override
-    public List<UsedNameData> getUsedNames() {
+    public List<UsedNameData> usedNames() {
         return Collections.unmodifiableList(knownPlayerNames);
     }
 
@@ -74,11 +74,11 @@ public class JsonPlayerData implements PlayerData {
         public static final BuilderCodec<KnownPlayerName> CODEC = BuilderCodec.builder(KnownPlayerName.class, KnownPlayerName::new)
                                                                               .append(new KeyedCodec<>("Name", Codec.STRING),
                                                                                       (economyBalance, name, extraInfo) -> economyBalance.name = name,
-                                                                                      (economyBalance, extraInfo) -> economyBalance.getName())
+                                                                                      (economyBalance, extraInfo) -> economyBalance.name())
                                                                               .add()
                                                                               .append(new KeyedCodec<>("FirstSeen", Codec.LONG),
                                                                                       (economyBalance, firstSeen, extraInfo) -> economyBalance.firstSeen = firstSeen,
-                                                                                      (economyBalance, extraInfo) -> economyBalance.getFirstSeen())
+                                                                                      (economyBalance, extraInfo) -> economyBalance.firstSeen())
                                                                               .add()
                                                                               .build();
 
@@ -96,12 +96,12 @@ public class JsonPlayerData implements PlayerData {
         private long firstSeen;
 
         @Override
-        public String getName() {
+        public String name() {
             return name;
         }
 
         @Override
-        public long getFirstSeen() {
+        public long firstSeen() {
             return firstSeen;
         }
     }

@@ -9,28 +9,28 @@ import java.util.UUID;
 
 public interface PlayerData {
 
-    UUID getUuid();
+    UUID uuid();
 
-    List<UsedNameData> getUsedNames();
+    List<UsedNameData> usedNames();
 
     default List<UsedNameData> getSortedUsedNames() {
-        return getUsedNames().stream()
-                             .sorted(Comparator.comparingLong(UsedNameData::getFirstSeen))
-                             .toList();
+        return usedNames().stream()
+                          .sorted(Comparator.comparingLong(UsedNameData::firstSeen))
+                          .toList();
     }
 
     default UsedNameData getLastKnownUsername() {
-        return getUsedNames().getLast();
+        return usedNames().getLast();
     }
 
     default boolean isOnline() {
         return Universe.get()
-                       .getPlayer(getUuid()) != null;
+                       .getPlayer(uuid()) != null;
     }
 
     default PlayerRef getPlayerRef() {
         return Universe.get()
-                       .getPlayer(getUuid());
+                       .getPlayer(uuid());
     }
 
     default World getWorld() {

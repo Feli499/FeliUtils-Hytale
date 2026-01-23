@@ -12,7 +12,7 @@ public abstract class AbstractPlayerDataLoader implements PlayerDataProvider, Pl
             return null;
 
         return playerData.getLastKnownUsername()
-                         .getName();
+                         .name();
     }
 
     @Override
@@ -22,6 +22,6 @@ public abstract class AbstractPlayerDataLoader implements PlayerDataProvider, Pl
         if (playerDataByLastName == null)
             return null;
 
-        return playerDataByLastName.getUuid();
+        return playerDataByLastName.uuid();
     }
 }
