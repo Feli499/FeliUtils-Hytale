@@ -100,6 +100,28 @@ public class MessageBuilderFactory {
                         .build();
     }
 
+    public Message errorTimestamp(long timestamp) {
+        return timestamp(timestamp, errorColor);
+    }
+
+    public Message mainTimestamp(long timestamp) {
+        return timestamp(timestamp, mainColor);
+    }
+
+    public Message secondTimestamp(long timestamp) {
+        return timestamp(timestamp, secondaryColor);
+    }
+
+    public Message timestamp(long timestamp, String color) {
+        return builder().timestamp(timestamp, color)
+                        .build();
+    }
+
+    public Message timestamp(long timestamp, Color color) {
+        return builder().timestamp(timestamp, color)
+                        .build();
+    }
+
     public void sendMain(CommandContext context, String message) {
         send(context, message, mainColor);
     }
