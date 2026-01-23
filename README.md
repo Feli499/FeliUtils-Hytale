@@ -1,11 +1,62 @@
-This plugin is a technical utility and developer tool. It is important to note that it does not add any gameplay features on its own. After installing it, players won't see any new items, blocks, or direct changes to the game mechanics.
+# FeliUtils Plugin
 
-Instead, it works entirely "under the hood" to support the server's infrastructure:
+[![Join Discord](https://img.shields.io/discord/1452733970507763793?style=for-the-badge&label=Join%20Discord)](https://discord.gg/6TgUkMJZw8)
+[![GitHub Release](https://img.shields.io/github/v/release/Feli499/FeliUtils-Hytale?style=for-the-badge)](https://github.com/Feli499/FeliUtils-Hytale/releases/latest)
 
-- A Foundation for Other Plugins: It acts as a library (or API) that other plugins can use to handle complex tasks without having to rewrite the same code from scratch.
-- Automated Data Management: Its primary job is to manage the technical side of player identification. It keeps track of which names belong to which unique IDs (UUIDs) and ensures this information is stored safely.
-- Simplifying Backend Development: By handling things like player name history and data persistence automatically, it allows developers to focus on creating actual game content while this plugin handles the administrative background work.
+## Overview
 
-In short, it’s a developer's toolbox. It provides the invisible groundwork that ensures player data is managed correctly, serving as a reliable base for other systems to build upon.
+FeliUtils is a **technical utility plugin** and **developer tool**. It does **not add gameplay features**, new items,
+blocks, or direct changes to the game mechanics. Instead, it works mostly "under the hood" to support the server's
+infrastructure.
 
-Want to keep up with my Projects? Join my Discord: https://discord.gg/6TgUkMJZw8 or follow me on Twitch, i stream my coding session: https://twitch.tv/feli490
+### Main Features
+
+- **Foundation for Other Plugins:**  
+  Acts as a library (API) for other plugins, allowing developers to handle complex tasks without rewriting the same code
+  multiple times.
+
+- **Automated Data Management:**  
+  Tracks player identification, keeping records of which names belong to which UUIDs, and ensures this information is
+  safely stored.
+
+- **Simplifying Backend Development:**  
+  Handles player name history and data persistence automatically, allowing developers to focus on game content while
+  FeliUtils manages administrative tasks.
+
+In short, FeliUtils is a **developer's toolbox** that provides invisible groundwork, ensuring player data is correctly
+managed and serving as a reliable base for other systems.
+
+---
+
+## Supported Features
+
+- **MySQL Support:**
+    - Saves player data in MySQL databases.
+    - Provides MySQL connection support for dependent plugins if configured in `config.json`, so other plugins do not
+      need to create their own SQL connections.
+
+- **Player Info Command (`/pinfo`):**
+    - Displays player information:
+        - UUID
+        - All previous names used to join the server, including join dates
+    - **Command Permission:** `feliutils.command.playerinfo`
+
+---
+
+## Installation
+
+1. Place the plugin `.jar` file in your server's `plugins` folder.
+2. Start or restart the server to generate the default `config.json`.
+3. Configure the MySQL connection (optional) in `config.json` if you want database support.
+4. Other plugins can now utilize the library/API functionalities provided by FeliUtils.
+
+---
+
+## Usage for Devs
+
+If you wanna get the last known Player Name or the corresponding UUID for a Player by a name, simply use the
+`PlayerDataProviderService` class.
+
+If you want to use the SQL support, you can use the `SQLConnectionService` class.
+
+Otherwise feel free to play around withe the Uitls classes or ask me on my Discord for help.
