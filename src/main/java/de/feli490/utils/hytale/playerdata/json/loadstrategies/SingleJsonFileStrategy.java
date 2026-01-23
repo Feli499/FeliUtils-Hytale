@@ -25,6 +25,7 @@ public class SingleJsonFileStrategy implements JsonFileStrategy {
         playerDataJson = FileUtils.loadOrCreateEmptyJson(filePath, "playerdata.json");
     }
 
+    @Override
     public void deleteData() throws IOException {
         Files.delete(playerDataJson);
     }

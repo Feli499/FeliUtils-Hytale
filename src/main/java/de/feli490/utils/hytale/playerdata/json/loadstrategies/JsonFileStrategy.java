@@ -10,5 +10,7 @@ public interface JsonFileStrategy {
 
     boolean hasData();
 
+    void deleteData() throws IOException;
+
     void save(JsonPlayerData jsonPlayerData) throws IOException;
 }

@@ -24,6 +24,11 @@ public class MultiJsonFileStrategy implements JsonFileStrategy {
     }
 
     @Override
+    public void deleteData() throws IOException {
+        Files.delete(directory);
+    }
+
+    @Override
     public Collection<JsonPlayerData> load() throws IOException {
 
         DirectoryStream<Path> paths = Files.newDirectoryStream(directory);
