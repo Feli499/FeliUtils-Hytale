@@ -7,7 +7,9 @@ import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
 import com.hypixel.hytale.server.core.plugin.PluginManager;
 import de.feli490.utils.core.common.tuple.Pair;
 import de.feli490.utils.core.sql.SQLConnection;
+import de.feli490.utils.hytale.commands.PlayerInfoCommand;
 import de.feli490.utils.hytale.events.PlayerReadySavePlayerDataEventListener;
+import de.feli490.utils.hytale.playerdata.PlayerDataProviderInstance;
 import de.feli490.utils.hytale.playerdata.PlayerDataSaver;
 import de.feli490.utils.hytale.playerdata.PlayerDataSetup;
 import de.feli490.utils.hytale.sql.SqlInitializer;
@@ -75,6 +77,8 @@ public class FeliUtilsPlugin extends JavaPlugin {
     protected void start() {
         
         getEventRegistry().registerGlobal(PlayerReadyEvent.class, new PlayerReadySavePlayerDataEventListener(getLogger(), playerDataSaver));
+
+        getCommandRegistry().registerCommand(new PlayerInfoCommand(PlayerDataProviderInstance.get()));
 
         getLogger().at(Level.INFO).log("FeliUtilsPlugin is started!");
     }
