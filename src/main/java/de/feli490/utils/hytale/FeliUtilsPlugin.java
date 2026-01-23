@@ -34,7 +34,7 @@ public class FeliUtilsPlugin extends JavaPlugin {
     @Override
     protected void setup() {
 
-        this.messageBuilderFactory = new MessageBuilderFactory("#00ff00", "#000000");
+        this.messageBuilderFactory = new MessageBuilderFactory("#00ff00", "#ffffff");
 
         HytaleLogger logger = getLogger();
         try {
