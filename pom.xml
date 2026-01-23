@@ -29,7 +29,7 @@
         <dependency>
             <groupId>de.feli490.utils.core</groupId>
             <artifactId>FeliUtils-Core</artifactId>
-            <version>1.0.1</version>
+            <version>1.1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.hypixel.hytale</groupId>
@@ -70,14 +70,6 @@
                                     <include>de.feli490.utils.core:FeliUtils-Core</include>
                                 </includes>
                             </artifactSet>
-                            <filters>
-                                <filter>
-                                    <artifact>de.feli490.utils.core:FeliUtils-Core</artifact>
-                                    <includes>
-                                        <include>de/feli490/utils/core/**</include>
-                                    </includes>
-                                </filter>
-                            </filters>
                         </configuration>
                     </execution>
                 </executions>
