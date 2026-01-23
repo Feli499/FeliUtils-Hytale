@@ -7,7 +7,7 @@ import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
 import com.hypixel.hytale.server.core.plugin.PluginManager;
 import de.feli490.utils.hytale.events.PlayerReadySavePlayerDataEventListener;
 import de.feli490.utils.hytale.playerdata.PlayerDataSaver;
-import de.feli490.utils.hytale.playerdata.json.SingleFileJsonPlayerDataLoader;
+import de.feli490.utils.hytale.playerdata.PlayerDataSetup;
 import de.feli490.utils.hytale.sql.SqlInitializer;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -50,16 +50,13 @@ public class FeliUtilsPlugin extends JavaPlugin {
             return;
         }
 
+        PlayerDataSetup playerDataSetup = new PlayerDataSetup(logger, getDataDirectory());
         try {
-
-            SingleFileJsonPlayerDataLoader playerDataProvider = new SingleFileJsonPlayerDataLoader(logger, getDataDirectory());
-            PlayerDataProviderInstance.set(playerDataProvider);
-            playerDataSaver = playerDataProvider;
-
+            playerDataSetup.setupProvider();
         } catch (IOException e) {
             logger.at(Level.SEVERE)
                   .withCause(e)
-                  .log("Failed to initialize player data loader... Shutting plugin down.");
+                  .log("Failed to initialize player data provider... Shutting plugin down.");
             shutdownPlugin();
             return;
         }

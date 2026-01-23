@@ -1,6 +1,4 @@
-package de.feli490.utils.hytale;
-
-import de.feli490.utils.hytale.playerdata.PlayerDataProvider;
+package de.feli490.utils.hytale.playerdata;
 
 public class PlayerDataProviderInstance {
 
