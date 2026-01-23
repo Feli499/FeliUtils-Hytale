@@ -4,12 +4,15 @@ import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.codec.codecs.array.ArrayCodec;
+import de.feli490.utils.hytale.playerdata.pojo.CachedPlayerData;
+import de.feli490.utils.hytale.playerdata.pojo.UsedNameData;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-public class JsonPlayerData {
+public class JsonPlayerData implements CachedPlayerData {
 
     public static final BuilderCodec<JsonPlayerData> CODEC = //
             BuilderCodec.builder(JsonPlayerData.class, JsonPlayerData::new)
@@ -36,18 +39,16 @@ public class JsonPlayerData {
         this.uuid = uuid;
     }
 
+    @Override
     public UUID getUuid() {
         return uuid;
     }
 
-    public List<KnownPlayerName> getKnownPlayerNames() {
-        return knownPlayerNames;
+    @Override
+    public List<UsedNameData> getUsedNames() {
+        return Collections.unmodifiableList(knownPlayerNames);
     }
-
-    public KnownPlayerName getLastKnownName(){
-        return knownPlayerNames.get(knownPlayerNames.size()-1);
-    }
-
+    
     private KnownPlayerName[] getLastKnownUsernameArray(){
         return knownPlayerNames.toArray(new KnownPlayerName[0]);
     }
@@ -69,7 +70,7 @@ public class JsonPlayerData {
         return jsonPlayerData;
     }
 
-    public static class KnownPlayerName{
+    public static class KnownPlayerName implements UsedNameData {
         public static final BuilderCodec<KnownPlayerName> CODEC = BuilderCodec.builder(KnownPlayerName.class, KnownPlayerName::new)
                                                                               .append(new KeyedCodec<>("Name", Codec.STRING),
                                                                                       (economyBalance, name, extraInfo) -> economyBalance.name = name,
@@ -94,10 +95,12 @@ public class JsonPlayerData {
         private String name;
         private long firstSeen;
 
+        @Override
         public String getName() {
             return name;
         }
 
+        @Override
         public long getFirstSeen() {
             return firstSeen;
         }

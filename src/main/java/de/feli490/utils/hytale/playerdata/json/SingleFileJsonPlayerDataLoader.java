@@ -8,6 +8,8 @@ import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.server.core.util.BsonUtil;
 import de.feli490.utils.core.common.tuple.Pair;
 import de.feli490.utils.hytale.playerdata.AbstractPlayerDataLoader;
+import de.feli490.utils.hytale.playerdata.pojo.CachedPlayerData;
+import de.feli490.utils.hytale.playerdata.pojo.UsedNameData;
 import de.feli490.utils.hytale.utils.FileUtils;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -23,8 +25,8 @@ public class SingleFileJsonPlayerDataLoader extends AbstractPlayerDataLoader {
     private final HytaleLogger logger;
     private final Path playerDataJson;
 
-    private Map<UUID, JsonPlayerData> playerData;
-    private Map<String, JsonPlayerData> playerDataByLastName;
+    private final Map<UUID, CachedPlayerData> playerData;
+    private final Map<String, CachedPlayerData> playerDataByLastName;
 
     public SingleFileJsonPlayerDataLoader(HytaleLogger logger, Path filePath) throws IOException {
 
@@ -44,13 +46,14 @@ public class SingleFileJsonPlayerDataLoader extends AbstractPlayerDataLoader {
 
         Map<String, List<Pair<Long, JsonPlayerData>>> lastKnownNames = new HashMap<>();
         for (JsonPlayerData jsonPlayerDatum : jsonPlayerData)
-            for (JsonPlayerData.KnownPlayerName knownPlayerName : jsonPlayerDatum.getKnownPlayerNames()) {
+            for (UsedNameData usedNameData : jsonPlayerDatum.getUsedNames()) {
 
-                String name = knownPlayerName.getName();
+                String name = usedNameData.getName();
                 if(!lastKnownNames.containsKey(name))
                     lastKnownNames.put(name, new ArrayList<>());
 
-                lastKnownNames.get(name).add(new Pair<>(knownPlayerName.getFirstSeen(), jsonPlayerDatum));
+                lastKnownNames.get(name)
+                              .add(new Pair<>(usedNameData.getFirstSeen(), jsonPlayerDatum));
             }
 
         for (Map.Entry<String, List<Pair<Long, JsonPlayerData>>> entry : lastKnownNames.entrySet()) {
@@ -69,11 +72,11 @@ public class SingleFileJsonPlayerDataLoader extends AbstractPlayerDataLoader {
 
     @Override
     public String getLastPlayerName(UUID uuid) {
-        JsonPlayerData jsonPlayerData = playerData.get(uuid);
-        if (jsonPlayerData == null)
+        CachedPlayerData cachedPlayerData = playerData.get(uuid);
+        if (cachedPlayerData == null)
             return null;
-        return jsonPlayerData.getLastKnownName()
-                             .getName();
+        return cachedPlayerData.getLastKnownUsername()
+                               .getName();
     }
 
     @Override
@@ -83,7 +86,7 @@ public class SingleFileJsonPlayerDataLoader extends AbstractPlayerDataLoader {
 
     @Override
     public UUID getPlayerUUIDByLastName(String lastName) {
-        JsonPlayerData jsonPlayerData = playerDataByLastName.get(lastName);
+        CachedPlayerData jsonPlayerData = playerDataByLastName.get(lastName);
         if (jsonPlayerData == null)
             return null;
         return jsonPlayerData.getUuid();
@@ -96,13 +99,13 @@ public class SingleFileJsonPlayerDataLoader extends AbstractPlayerDataLoader {
 
     @Override
     public Collection<String> getKnownPlayerNames(UUID uuid) {
-        JsonPlayerData jsonPlayerData = playerData.get(uuid);
-        if (jsonPlayerData == null)
+        CachedPlayerData cachedPlayerData = playerData.get(uuid);
+        if (cachedPlayerData == null)
             return null;
-        return jsonPlayerData.getKnownPlayerNames()
-                             .stream()
-                             .map(JsonPlayerData.KnownPlayerName::getName)
-                             .toList();
+        return cachedPlayerData.getUsedNames()
+                               .stream()
+                               .map(UsedNameData::getName)
+                               .toList();
     }
 
     @Override
@@ -127,7 +130,7 @@ public class SingleFileJsonPlayerDataLoader extends AbstractPlayerDataLoader {
         if(lastPlayerName.equals(name))
             return false;
 
-        JsonPlayerData jsonPlayerData = playerData.get(playerUUID);
+        JsonPlayerData jsonPlayerData = (JsonPlayerData) playerData.get(playerUUID);
         jsonPlayerData.addKnownPlayerName(name);
         playerDataByLastName.put(name, jsonPlayerData);
         return true;
@@ -152,9 +155,16 @@ public class SingleFileJsonPlayerDataLoader extends AbstractPlayerDataLoader {
             return jsonPlayerDataArray;
         }
 
-        public static JsonPlayerDataHolder create(Collection<JsonPlayerData> jsonPlayerDataCollection) {
+        public static JsonPlayerDataHolder create(Collection<CachedPlayerData> cachedPlayerData) {
+
+            JsonPlayerData[] jsonPlayerData = new JsonPlayerData[cachedPlayerData.size()];
+            int i = 0;
+            for (CachedPlayerData cachedPlayerDatum : cachedPlayerData) {
+                jsonPlayerData[i++] = (JsonPlayerData) cachedPlayerDatum;
+            }
+
             JsonPlayerDataHolder jsonPlayerDataHolder = new JsonPlayerDataHolder();
-            jsonPlayerDataHolder.jsonPlayerDataArray = jsonPlayerDataCollection.toArray(new JsonPlayerData[0]);
+            jsonPlayerDataHolder.jsonPlayerDataArray = jsonPlayerData;
             return jsonPlayerDataHolder;
         }
     }
