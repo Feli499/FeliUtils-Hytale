@@ -36,7 +36,7 @@ public class SqlInitializer {
         }
 
         if (config.isEnableSQLProvider())
-            SQLConnectionProvider.set(this);
+            SQLConnectionService.set(this);
 
         mySQLConnection = new MySQLConnection(HytaleLoggerAdapter.createLoggerAdapter(this.hytaleLogger), sqlConfig);
     }

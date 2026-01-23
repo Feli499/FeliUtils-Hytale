@@ -1,16 +1,17 @@
 package de.feli490.utils.hytale;
 
 import de.feli490.utils.hytale.playerdata.PlayerDataProvider;
+import de.feli490.utils.hytale.playerdata.PlayerDataProviderService;
 
 public class PlayerDataProviderInstance {
 
     /**
-     * Use {@link de.feli490.utils.hytale.playerdata.PlayerDataProviderInstance#get()} instead.
+     * Use {@link PlayerDataProviderService#get()} instead.
      *
      * @return
      */
     @Deprecated(forRemoval = true)
     public static PlayerDataProvider get() {
-        return de.feli490.utils.hytale.playerdata.PlayerDataProviderInstance.get();
+        return PlayerDataProviderService.get();
     }
 }

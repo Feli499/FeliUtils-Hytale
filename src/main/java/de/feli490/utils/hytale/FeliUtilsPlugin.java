@@ -9,7 +9,7 @@ import de.feli490.utils.core.common.tuple.Pair;
 import de.feli490.utils.core.sql.SQLConnection;
 import de.feli490.utils.hytale.commands.PlayerInfoCommand;
 import de.feli490.utils.hytale.events.PlayerReadySavePlayerDataEventListener;
-import de.feli490.utils.hytale.playerdata.PlayerDataProviderInstance;
+import de.feli490.utils.hytale.playerdata.PlayerDataProviderService;
 import de.feli490.utils.hytale.playerdata.PlayerDataSaver;
 import de.feli490.utils.hytale.playerdata.PlayerDataSetup;
 import de.feli490.utils.hytale.sql.SqlInitializer;
@@ -78,7 +78,7 @@ public class FeliUtilsPlugin extends JavaPlugin {
         
         getEventRegistry().registerGlobal(PlayerReadyEvent.class, new PlayerReadySavePlayerDataEventListener(getLogger(), playerDataSaver));
 
-        getCommandRegistry().registerCommand(new PlayerInfoCommand(PlayerDataProviderInstance.get()));
+        getCommandRegistry().registerCommand(new PlayerInfoCommand(PlayerDataProviderService.get()));
 
         getLogger().at(Level.INFO).log("FeliUtilsPlugin is started!");
     }

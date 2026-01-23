@@ -42,7 +42,7 @@ public class PlayerDataSetup {
 
         if (sqlPlayerDataLoader == null) {
             JsonPlayerDataLoader jsonPlayerDataLoader = new JsonPlayerDataLoader(multiJsonFileStrategy);
-            PlayerDataProviderInstance.set(jsonPlayerDataLoader);
+            PlayerDataProviderService.set(jsonPlayerDataLoader);
             return;
         }
 
@@ -51,6 +51,6 @@ public class PlayerDataSetup {
             multiJsonFileStrategy.deleteData();
         }
 
-        PlayerDataProviderInstance.set(sqlPlayerDataLoader);
+        PlayerDataProviderService.set(sqlPlayerDataLoader);
     }
 }

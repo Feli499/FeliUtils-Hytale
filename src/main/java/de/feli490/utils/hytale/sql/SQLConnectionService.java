@@ -2,7 +2,7 @@ package de.feli490.utils.hytale.sql;
 
 import de.feli490.utils.core.sql.SQLConnection;
 
-public class SQLConnectionProvider {
+public class SQLConnectionService {
     private static SqlInitializer INSTANCE;
 
     public static boolean hasConnection() {
@@ -10,10 +10,10 @@ public class SQLConnectionProvider {
     }
 
     public static SQLConnection get() {
-        return SQLConnectionProvider.INSTANCE.loadConnection();
+        return SQLConnectionService.INSTANCE.loadConnection();
     }
 
     static void set(SqlInitializer sqlInitializer) {
-        SQLConnectionProvider.INSTANCE = sqlInitializer;
+        SQLConnectionService.INSTANCE = sqlInitializer;
     }
 }

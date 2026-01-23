@@ -1,14 +1,14 @@
 package de.feli490.utils.hytale.playerdata;
 
-public class PlayerDataProviderInstance {
+public class PlayerDataProviderService {
 
     private static PlayerDataProvider INSTANCE;
 
     public static PlayerDataProvider get() {
-        return PlayerDataProviderInstance.INSTANCE;
+        return PlayerDataProviderService.INSTANCE;
     }
 
     static void set(PlayerDataProvider playerDataProvider) {
-        PlayerDataProviderInstance.INSTANCE = playerDataProvider;
+        PlayerDataProviderService.INSTANCE = playerDataProvider;
     }
 }
