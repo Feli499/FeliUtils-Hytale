@@ -7,8 +7,7 @@ import com.hypixel.hytale.codec.util.RawJsonReader;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.server.core.util.BsonUtil;
 import de.feli490.utils.core.common.tuple.Pair;
-import de.feli490.utils.hytale.playerdata.AbstractPlayerDataLoader;
-import de.feli490.utils.hytale.playerdata.pojo.CachedPlayerData;
+import de.feli490.utils.hytale.playerdata.pojo.PlayerData;
 import de.feli490.utils.hytale.playerdata.pojo.UsedNameData;
 import de.feli490.utils.hytale.utils.FileUtils;
 import java.io.IOException;
@@ -20,20 +19,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-public class SingleFileJsonPlayerDataLoader extends AbstractPlayerDataLoader {
+public class SingleFileJsonPlayerDataLoader extends AbstractJsonPlayerDataLoader {
 
     private final HytaleLogger logger;
     private final Path playerDataJson;
 
-    private final Map<UUID, CachedPlayerData> playerData;
-    private final Map<String, CachedPlayerData> playerDataByLastName;
 
     public SingleFileJsonPlayerDataLoader(HytaleLogger logger, Path filePath) throws IOException {
 
         this.logger = logger;
         playerDataJson = FileUtils.loadOrCreateEmptyJson(filePath, "playerdata.json");
-        playerData = new HashMap<>();
-        playerDataByLastName = new HashMap<>();
 
         JsonPlayerDataHolder jsonPlayerDataHolder = RawJsonReader.readSync(playerDataJson, JsonPlayerDataHolder.CODEC, logger);
         JsonPlayerData[] jsonPlayerData = jsonPlayerDataHolder.getJsonPlayerDataArray();
@@ -66,74 +61,9 @@ public class SingleFileJsonPlayerDataLoader extends AbstractPlayerDataLoader {
         }
     }
 
-    private void save() throws IOException {
+    @Override
+    protected void save(UUID playerUUID) throws IOException {
         BsonUtil.writeSync(playerDataJson, JsonPlayerDataHolder.CODEC, JsonPlayerDataHolder.create(playerData.values()), logger);
-    }
-
-    @Override
-    public String getLastPlayerName(UUID uuid) {
-        CachedPlayerData cachedPlayerData = playerData.get(uuid);
-        if (cachedPlayerData == null)
-            return null;
-        return cachedPlayerData.getLastKnownUsername()
-                               .getName();
-    }
-
-    @Override
-    public boolean isKnownPlayer(UUID uuid) {
-        return playerData.containsKey(uuid);
-    }
-
-    @Override
-    public UUID getPlayerUUIDByLastName(String lastName) {
-        CachedPlayerData jsonPlayerData = playerDataByLastName.get(lastName);
-        if (jsonPlayerData == null)
-            return null;
-        return jsonPlayerData.getUuid();
-    }
-
-    @Override
-    public Collection<UUID> getAllKnownPlayerUUIDs() {
-        return playerData.keySet();
-    }
-
-    @Override
-    public Collection<String> getKnownPlayerNames(UUID uuid) {
-        CachedPlayerData cachedPlayerData = playerData.get(uuid);
-        if (cachedPlayerData == null)
-            return null;
-        return cachedPlayerData.getUsedNames()
-                               .stream()
-                               .map(UsedNameData::getName)
-                               .toList();
-    }
-
-    @Override
-    public void addPlayerNameIfUnknown(UUID playerUUID, String lastName) throws IOException {
-
-        boolean needsSaving = handlePlayerDataIfNecessary(playerUUID, lastName);
-        if(!needsSaving)
-            return;
-
-        save();
-    }
-
-    private boolean handlePlayerDataIfNecessary(UUID playerUUID, String name) {
-        if(!playerData.containsKey(playerUUID)){
-            JsonPlayerData jsonPlayerData = JsonPlayerData.create(playerUUID, name);
-            playerData.put(playerUUID, jsonPlayerData);
-            playerDataByLastName.put(name, jsonPlayerData);
-            return true;
-        }
-
-        String lastPlayerName = getLastPlayerName(playerUUID);
-        if(lastPlayerName.equals(name))
-            return false;
-
-        JsonPlayerData jsonPlayerData = (JsonPlayerData) playerData.get(playerUUID);
-        jsonPlayerData.addKnownPlayerName(name);
-        playerDataByLastName.put(name, jsonPlayerData);
-        return true;
     }
 
     private static class JsonPlayerDataHolder {
@@ -155,11 +85,11 @@ public class SingleFileJsonPlayerDataLoader extends AbstractPlayerDataLoader {
             return jsonPlayerDataArray;
         }
 
-        public static JsonPlayerDataHolder create(Collection<CachedPlayerData> cachedPlayerData) {
+        public static JsonPlayerDataHolder create(Collection<PlayerData> playerData) {
 
-            JsonPlayerData[] jsonPlayerData = new JsonPlayerData[cachedPlayerData.size()];
+            JsonPlayerData[] jsonPlayerData = new JsonPlayerData[playerData.size()];
             int i = 0;
-            for (CachedPlayerData cachedPlayerDatum : cachedPlayerData) {
+            for (PlayerData cachedPlayerDatum : playerData) {
                 jsonPlayerData[i++] = (JsonPlayerData) cachedPlayerDatum;
             }
 

@@ -4,7 +4,7 @@ import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.codec.codecs.array.ArrayCodec;
-import de.feli490.utils.hytale.playerdata.pojo.CachedPlayerData;
+import de.feli490.utils.hytale.playerdata.pojo.PlayerData;
 import de.feli490.utils.hytale.playerdata.pojo.UsedNameData;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,7 +12,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-public class JsonPlayerData implements CachedPlayerData {
+public class JsonPlayerData implements PlayerData {
 
     public static final BuilderCodec<JsonPlayerData> CODEC = //
             BuilderCodec.builder(JsonPlayerData.class, JsonPlayerData::new)
@@ -48,7 +48,7 @@ public class JsonPlayerData implements CachedPlayerData {
     public List<UsedNameData> getUsedNames() {
         return Collections.unmodifiableList(knownPlayerNames);
     }
-    
+
     private KnownPlayerName[] getLastKnownUsernameArray(){
         return knownPlayerNames.toArray(new KnownPlayerName[0]);
     }
