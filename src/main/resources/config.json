@@ -1,0 +1,12 @@
+{
+  "__comment__": "you can change the storage type here, currently supports json and mysql",
+  "StorageToUse": "json",
+  "MySQLSettings": {
+    "Host": "localhost",
+    "Port": 3306,
+    "Database": "changethis",
+    "Username": "changethis",
+    "Password": "changethis",
+    "Tableprefix": "feliutils"
+  }
+}
