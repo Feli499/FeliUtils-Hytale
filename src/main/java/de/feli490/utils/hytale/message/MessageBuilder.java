@@ -39,21 +39,21 @@ public class MessageBuilder {
      * @return The message builder instance for method chaining.
      * @see DateTimeFormatter#ofPattern(String)
      */
-    public MessageBuilder timeStampFormatter(String pattern) {
+    public MessageBuilder timestampFormatter(String pattern) {
         this.timeFormatter = DateTimeFormatter.ofPattern(pattern)
                                               .withZone(ZoneId.systemDefault());
         return this;
     }
 
-    public MessageBuilder mainTimeStamp(long timestamp) {
+    public MessageBuilder mainTimestamp(long timestamp) {
         return timestamp(timestamp, mainColor);
     }
 
-    public MessageBuilder secondTimeStamp(long timestamp) {
+    public MessageBuilder secondTimestamp(long timestamp) {
         return timestamp(timestamp, secondaryColor);
     }
 
-    public MessageBuilder errorTimeStamp(long timestamp) {
+    public MessageBuilder errorTimestamp(long timestamp) {
         return timestamp(timestamp, errorColor);
     }
 

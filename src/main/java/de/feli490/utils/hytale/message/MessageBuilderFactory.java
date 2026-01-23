@@ -1,6 +1,7 @@
 package de.feli490.utils.hytale.message;
 
 import com.hypixel.hytale.server.core.Message;
+import java.awt.Color;
 import java.util.Objects;
 
 public class MessageBuilderFactory {
@@ -75,15 +76,36 @@ public class MessageBuilderFactory {
         this.base = base;
     }
 
+    public Message error(String message) {
+        return color(message, errorColor);
+    }
+
+    public Message main(String message) {
+        return color(message, mainColor);
+    }
+
+    public Message second(String message) {
+        return color(message, secondaryColor);
+    }
+
+    public Message color(String message, String color) {
+        return builder().add(message, color)
+                        .build();
+    }
+
+    public Message color(String message, Color color) {
+        return builder().add(message, color)
+                        .build();
+    }
+
     public MessageBuilderFactory copy() {
         return new MessageBuilderFactory(base, mainColor, secondaryColor, errorColor, timeStampFormatter);
     }
 
-    public MessageBuilder createBuilder() {
+    public MessageBuilder builder() {
         MessageBuilder messageBuilder = new MessageBuilder(base, mainColor, secondaryColor, errorColor);
         if (timeStampFormatter != null)
-            messageBuilder.timeStampFormatter(timeStampFormatter);
+            messageBuilder.timestampFormatter(timeStampFormatter);
         return messageBuilder;
     }
-
 }

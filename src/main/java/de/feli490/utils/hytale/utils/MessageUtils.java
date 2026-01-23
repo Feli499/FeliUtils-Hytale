@@ -6,6 +6,10 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * @Deprecated Use {@link de.feli490.utils.hytale.message.MessageBuilderFactory}
+ */
+@Deprecated(forRemoval = true)
 public class MessageUtils {
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm dd.MM.yyyy")
                                                                              .withZone(ZoneId.systemDefault());

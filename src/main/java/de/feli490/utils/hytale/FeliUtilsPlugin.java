@@ -9,6 +9,7 @@ import de.feli490.utils.core.common.tuple.Pair;
 import de.feli490.utils.core.sql.SQLConnection;
 import de.feli490.utils.hytale.commands.PlayerInfoCommand;
 import de.feli490.utils.hytale.events.PlayerReadySavePlayerDataEventListener;
+import de.feli490.utils.hytale.message.MessageBuilderFactory;
 import de.feli490.utils.hytale.playerdata.PlayerDataProviderService;
 import de.feli490.utils.hytale.playerdata.PlayerDataSaver;
 import de.feli490.utils.hytale.playerdata.PlayerDataSetup;
@@ -24,6 +25,7 @@ public class FeliUtilsPlugin extends JavaPlugin {
     private SqlInitializer sqlInitializer;
 
     private FeliUtilsConfig config;
+    private MessageBuilderFactory messageBuilderFactory;
 
     public FeliUtilsPlugin(@NonNullDecl JavaPluginInit init) {
         super(init);
@@ -31,6 +33,8 @@ public class FeliUtilsPlugin extends JavaPlugin {
 
     @Override
     protected void setup() {
+
+        this.messageBuilderFactory = new MessageBuilderFactory("#00ff00", "#000000");
 
         HytaleLogger logger = getLogger();
         try {
@@ -78,7 +82,7 @@ public class FeliUtilsPlugin extends JavaPlugin {
         
         getEventRegistry().registerGlobal(PlayerReadyEvent.class, new PlayerReadySavePlayerDataEventListener(getLogger(), playerDataSaver));
 
-        getCommandRegistry().registerCommand(new PlayerInfoCommand(PlayerDataProviderService.get()));
+        getCommandRegistry().registerCommand(new PlayerInfoCommand(messageBuilderFactory, PlayerDataProviderService.get()));
 
         getLogger().at(Level.INFO).log("FeliUtilsPlugin is started!");
     }
