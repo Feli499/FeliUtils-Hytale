@@ -52,4 +52,8 @@ public class SqlInitializer {
     public SQLConnection loadConnection() {
         return mySQLConnection;
     }
+
+    public boolean hasConnection() {
+        return mySQLConnection != null;
+    }
 }

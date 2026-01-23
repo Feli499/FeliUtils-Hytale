@@ -49,6 +49,10 @@ public class FeliUtilsConfig {
         return mySQLSettings.getTableprefix();
     }
 
+    public boolean useSQLStorage() {
+        return storageToUse.equalsIgnoreCase("mysql");
+    }
+
     public static FeliUtilsConfig load(Path directory, HytaleLogger logger) throws IOException {
         Path configPath = FileUtils.loadOrCreateJson(directory, "config.json", FeliUtilsConfig.class.getResourceAsStream("/config.json"));
         return RawJsonReader.readSync(configPath, FeliUtilsConfig.CODEC, logger);

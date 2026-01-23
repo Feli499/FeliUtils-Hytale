@@ -1,11 +1,13 @@
 package de.feli490.utils.hytale.playerdata;
 
 import com.hypixel.hytale.logger.HytaleLogger;
+import de.feli490.utils.core.common.tuple.Pair;
+import de.feli490.utils.core.sql.SQLConnection;
 import de.feli490.utils.hytale.playerdata.json.JsonPlayerData;
 import de.feli490.utils.hytale.playerdata.json.JsonPlayerDataLoader;
 import de.feli490.utils.hytale.playerdata.json.loadstrategies.MultiJsonFileStrategy;
 import de.feli490.utils.hytale.playerdata.json.loadstrategies.SingleJsonFileStrategy;
-import java.io.IOException;
+import de.feli490.utils.hytale.playerdata.sql.SqlPlayerDataLoader;
 import java.nio.file.Path;
 import java.util.Collection;
 
@@ -13,13 +15,18 @@ public class PlayerDataSetup {
 
     private final HytaleLogger logger;
     private final Path pluginDirectory;
+    private final Pair<SQLConnection, String> sqlConnection;
 
-    public PlayerDataSetup(HytaleLogger logger, Path pluginDirectory) {
+    public PlayerDataSetup(HytaleLogger logger, Path pluginDirectory, Pair<SQLConnection, String> sqlConnection) {
         this.logger = logger;
         this.pluginDirectory = pluginDirectory;
+        this.sqlConnection = sqlConnection;
     }
 
-    public void setupProvider() throws IOException {
+    public void setupProvider() throws Exception {
+
+        if (sqlConnection != null)
+            new SqlPlayerDataLoader(sqlConnection.getFirst(), sqlConnection.getSecond());
 
         SingleJsonFileStrategy singleJsonFileStrategy = new SingleJsonFileStrategy(logger, pluginDirectory);
         MultiJsonFileStrategy multiJsonFileStrategy = new MultiJsonFileStrategy(logger, pluginDirectory);
