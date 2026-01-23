@@ -1,6 +1,8 @@
 package de.feli490.utils.hytale.message;
 
 import com.hypixel.hytale.server.core.Message;
+import com.hypixel.hytale.server.core.command.system.CommandContext;
+import com.hypixel.hytale.server.core.universe.PlayerRef;
 import java.awt.Color;
 import java.util.Objects;
 
@@ -96,6 +98,46 @@ public class MessageBuilderFactory {
     public Message color(String message, Color color) {
         return builder().add(message, color)
                         .build();
+    }
+
+    public void sendMain(CommandContext context, String message) {
+        send(context, message, mainColor);
+    }
+
+    public void sendSecond(CommandContext context, String message) {
+        send(context, message, secondaryColor);
+    }
+
+    public void sendError(CommandContext context, String message) {
+        send(context, message, errorColor);
+    }
+
+    public void send(CommandContext context, String message, String color) {
+        context.sendMessage(color(message, color));
+    }
+
+    public void send(CommandContext context, String message, Color color) {
+        context.sendMessage(color(message, color));
+    }
+
+    public void sendMain(PlayerRef playerRef, String message) {
+        send(playerRef, message, mainColor);
+    }
+
+    public void sendSecond(PlayerRef playerRef, String message) {
+        send(playerRef, message, secondaryColor);
+    }
+
+    public void sendError(PlayerRef playerRef, String message) {
+        send(playerRef, message, errorColor);
+    }
+
+    public void send(PlayerRef playerRef, String message, String color) {
+        playerRef.sendMessage(color(message, color));
+    }
+
+    public void send(PlayerRef playerRef, String message, Color color) {
+        playerRef.sendMessage(color(message, color));
     }
 
     public MessageBuilderFactory copy() {
