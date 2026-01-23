@@ -31,7 +31,7 @@ public class MultiJsonFileStrategy implements JsonFileStrategy {
     @Override
     public Collection<JsonPlayerData> load() throws IOException {
 
-        DirectoryStream<Path> paths = Files.newDirectoryStream(directory);
+        DirectoryStream<Path> paths = Files.newDirectoryStream(directory, "*.json");
 
         Set<JsonPlayerData> jsonPlayerDataSet = new HashSet<>();
         for (Path path : paths) {
