@@ -1,6 +1,8 @@
 {
   "__comment__": "you can change the storage type here, currently supports json and mysql",
   "StorageToUse": "json",
+  "__comment__": "If enabled, the plugin will create a connection to a MySQL database. And provides the connection to other plugins depending on it.",
+  "EnableSQLProvider": false,
   "MySQLSettings": {
     "Host": "localhost",
     "Port": 3306,

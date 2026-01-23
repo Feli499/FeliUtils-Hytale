@@ -18,18 +18,27 @@ public class FeliUtilsConfig {
                                 (data, storageSetting, extraInfo) -> data.storageToUse = storageSetting,
                                 (data, extraInfo) -> data.storageToUse)
                         .add()
+                        .append(new KeyedCodec<>("EnableSQLProvider", Codec.BOOLEAN),
+                                (data, enableSQLProvider, extraInfo) -> data.enableSQLProvider = enableSQLProvider,
+                                (data, extraInfo) -> data.enableSQLProvider)
+                        .add()
                         .append(new KeyedCodec<>("MySQLSettings", MySQLSettings.CODEC),
                                 (data, mySqlSettings, extraInfo) -> data.mySQLSettings = mySqlSettings,
                                 (data, extraInfo) -> data.mySQLSettings)
                         .add()
                         .build();
     private String storageToUse;
+    private boolean enableSQLProvider;
     private MySQLSettings mySQLSettings;
 
     private FeliUtilsConfig() {}
 
     public String getStorageToUse() {
         return storageToUse;
+    }
+
+    public boolean isEnableSQLProvider() {
+        return enableSQLProvider;
     }
 
     public SQLConfig getSQLConfig() {
