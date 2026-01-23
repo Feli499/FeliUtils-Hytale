@@ -11,6 +11,7 @@ public class MessageUtils {
                                                                              .withZone(ZoneId.systemDefault());
     public static final Color MAIN_COLOR = Color.GREEN;
     public static final Color SECONDARY_COLOR = Color.WHITE;
+    public static final Color ERROR_COLOR = Color.RED;
 
     private MessageUtils() {}
 
@@ -23,7 +24,7 @@ public class MessageUtils {
     }
 
     public static Message error(String message) {
-        return format(message, Color.RED);
+        return format(message, ERROR_COLOR);
     }
 
     public static Message format(String message, Color color) {
