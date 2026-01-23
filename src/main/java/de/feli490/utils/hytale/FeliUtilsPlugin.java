@@ -8,13 +8,17 @@ import com.hypixel.hytale.server.core.plugin.PluginManager;
 import de.feli490.utils.hytale.events.PlayerReadySavePlayerDataEventListener;
 import de.feli490.utils.hytale.playerdata.PlayerDataSaver;
 import de.feli490.utils.hytale.playerdata.json.SingleFileJsonPlayerDataLoader;
+import de.feli490.utils.hytale.sql.SqlInitializer;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.logging.Level;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
 public class FeliUtilsPlugin extends JavaPlugin {
 
     private PlayerDataSaver playerDataSaver;
+    private SqlInitializer sqlInitializer;
+
     private FeliUtilsConfig config;
 
     public FeliUtilsPlugin(@NonNullDecl JavaPluginInit init) {
@@ -31,6 +35,17 @@ public class FeliUtilsPlugin extends JavaPlugin {
             logger.at(Level.SEVERE)
                   .withCause(e)
                   .log("Failed to load config.json... Shutting plugin down.");
+            shutdownPlugin();
+            return;
+        }
+
+        sqlInitializer = new SqlInitializer(logger, config);
+        try {
+            sqlInitializer.init();
+        } catch (SQLException e) {
+            logger.at(Level.SEVERE)
+                  .withCause(e)
+                  .log("Failed to initialize SQL connection... Shutting plugin down.");
             shutdownPlugin();
             return;
         }
@@ -68,6 +83,15 @@ public class FeliUtilsPlugin extends JavaPlugin {
 
     @Override
     protected void shutdown() {
+
+        try {
+            sqlInitializer.shutdown();
+        } catch (IOException e) {
+            getLogger().at(Level.SEVERE)
+                       .withCause(e)
+                       .log("Failed to shutdown SQL connection!");
+        }
+
         getLogger().at(Level.INFO).log("FeliUtilsPlugin is shutdown!");
     }
 }
