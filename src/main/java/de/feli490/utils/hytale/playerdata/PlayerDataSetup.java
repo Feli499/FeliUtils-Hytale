@@ -23,7 +23,7 @@ public class PlayerDataSetup {
         this.sqlConnection = sqlConnection;
     }
 
-    public void setupProvider() throws Exception {
+    public PlayerDataSaver setupProvider() throws Exception {
 
         SqlPlayerDataLoader sqlPlayerDataLoader = null;
         if (sqlConnection != null) {
@@ -43,7 +43,7 @@ public class PlayerDataSetup {
         if (sqlPlayerDataLoader == null) {
             JsonPlayerDataLoader jsonPlayerDataLoader = new JsonPlayerDataLoader(multiJsonFileStrategy);
             PlayerDataProviderService.set(jsonPlayerDataLoader);
-            return;
+            return jsonPlayerDataLoader;
         }
 
         if (multiJsonFileStrategy.hasData()) {
@@ -52,5 +52,6 @@ public class PlayerDataSetup {
         }
 
         PlayerDataProviderService.set(sqlPlayerDataLoader);
+        return sqlPlayerDataLoader;
     }
 }

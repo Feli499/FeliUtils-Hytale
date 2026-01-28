@@ -64,7 +64,7 @@ public class FeliUtilsPlugin extends JavaPlugin {
 
         PlayerDataSetup playerDataSetup = new PlayerDataSetup(logger, getDataDirectory(), sqlConnectionPair);
         try {
-            playerDataSetup.setupProvider();
+            playerDataSaver = playerDataSetup.setupProvider();
         } catch (Exception e) {
             logger.at(Level.SEVERE)
                   .withCause(e)
