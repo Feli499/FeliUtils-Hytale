@@ -4,7 +4,7 @@
 
     <groupId>de.feli490.utils.hytale</groupId>
     <artifactId>FeliUtils-Hytale</artifactId>
-    <version>1.1.1</version>
+    <version>1.1.2-SNAPSHOT</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
