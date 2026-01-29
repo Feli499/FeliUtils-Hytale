@@ -13,6 +13,7 @@ import de.feli490.utils.hytale.message.MessageBuilderFactory;
 import de.feli490.utils.hytale.playerdata.PlayerDataProviderService;
 import de.feli490.utils.hytale.playerdata.PlayerDataSaver;
 import de.feli490.utils.hytale.playerdata.PlayerDataSetup;
+import de.feli490.utils.hytale.redis.RedisInitializer;
 import de.feli490.utils.hytale.sql.SqlInitializer;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -26,6 +27,8 @@ public class FeliUtilsPlugin extends JavaPlugin {
 
     private FeliUtilsConfig config;
     private MessageBuilderFactory messageBuilderFactory;
+
+    private RedisInitializer redisInitializer;
 
     public FeliUtilsPlugin(@NonNullDecl JavaPluginInit init) {
         super(init);
@@ -58,6 +61,9 @@ public class FeliUtilsPlugin extends JavaPlugin {
             return;
         }
 
+        if (config.isEnableRedisProvider())
+            initializeRedis();
+
         Pair<SQLConnection, String> sqlConnectionPair = null;
         if (sqlInitializer.hasConnection() && config.useSQLStorage())
             sqlConnectionPair = new Pair<>(sqlInitializer.loadConnection(), config.getTableprefix());
@@ -77,13 +83,23 @@ public class FeliUtilsPlugin extends JavaPlugin {
               .log("FeliUtilsPlugin is setup!");
     }
 
+    private void initializeRedis() {
+        HytaleLogger logger = getLogger();
+        redisInitializer = new RedisInitializer(logger, config);
+        try {
+            redisInitializer.init();
+        } catch (Exception e) {
+            logger.at(Level.SEVERE)
+                  .log("Failed to initialize Redis connection.");
+        }
+    }
+
     @Override
     protected void start() {
         
         getEventRegistry().registerGlobal(PlayerReadyEvent.class, new PlayerReadySavePlayerDataEventListener(getLogger(), playerDataSaver));
 
         getCommandRegistry().registerCommand(new PlayerInfoCommand(messageBuilderFactory, PlayerDataProviderService.get()));
-
         getLogger().at(Level.INFO).log("FeliUtilsPlugin is started!");
     }
 
@@ -102,6 +118,15 @@ public class FeliUtilsPlugin extends JavaPlugin {
                        .withCause(e)
                        .log("Failed to shutdown SQL connection!");
         }
+
+        if (redisInitializer != null)
+            try {
+                redisInitializer.shutdown();
+            } catch (Exception e) {
+                getLogger().at(Level.SEVERE)
+                           .withCause(e)
+                           .log("Failed to shutdown Redis connection!");
+            }
 
         getLogger().at(Level.INFO).log("FeliUtilsPlugin is shutdown!");
     }

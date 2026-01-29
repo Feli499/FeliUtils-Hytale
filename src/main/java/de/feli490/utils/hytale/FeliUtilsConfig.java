@@ -26,10 +26,22 @@ public class FeliUtilsConfig {
                                 (data, mySqlSettings, extraInfo) -> data.mySQLSettings = mySqlSettings,
                                 (data, extraInfo) -> data.mySQLSettings)
                         .add()
+                        .append(new KeyedCodec<>("EnableRedisProvider", Codec.BOOLEAN),
+                                (data, enableRedisProvider, extraInfo) -> data.enableRedisProvider = enableRedisProvider,
+                                (data, extraInfo) -> data.enableRedisProvider)
+                        .add()
+                        .append(new KeyedCodec<>("RedisSettings", RedisSettings.CODEC),
+                                (data, redisSettings, extraInfo) -> data.redisSettings = redisSettings,
+                                (data, redisSettings) -> data.redisSettings)
+                        .add()
                         .build();
     private String storageToUse;
+
     private boolean enableSQLProvider;
     private MySQLSettings mySQLSettings;
+
+    private boolean enableRedisProvider;
+    private RedisSettings redisSettings;
 
     private FeliUtilsConfig() {}
 
@@ -47,6 +59,16 @@ public class FeliUtilsConfig {
 
     public String getTableprefix() {
         return mySQLSettings.getTableprefix();
+    }
+
+    public boolean isEnableRedisProvider() {
+        return enableRedisProvider;
+    }
+
+    public String getRedisConnectionString() {
+        if (redisSettings == null)
+            return null;
+        return redisSettings.getRedisConnectionString();
     }
 
     public boolean useSQLStorage() {
@@ -101,6 +123,45 @@ public class FeliUtilsConfig {
 
         public String getTableprefix() {
             return tableprefix;
+        }
+    }
+
+    private static class RedisSettings {
+
+        public static final BuilderCodec<RedisSettings> CODEC = //
+                BuilderCodec.builder(RedisSettings.class, RedisSettings::new)
+                            .append(new KeyedCodec<>("Host", Codec.STRING),
+                                    (redisSettings, host, extraInfo) -> redisSettings.host = host,
+                                    (redisSettings, extraInfo) -> redisSettings.host)
+                            .add()
+                            .append(new KeyedCodec<>("Port", Codec.INTEGER),
+                                    (redisSettings, port, extraInfo) -> redisSettings.port = port,
+                                    (redisSettings, extraInfo) -> redisSettings.port)
+                            .add()
+                            .append(new KeyedCodec<>("Password", Codec.STRING),
+                                    (redisSettings, password, extraInfo) -> redisSettings.password = password,
+                                    (redisSettings, extraInfo) -> redisSettings.password)
+                            .add()
+                            .build();
+
+        private String host;
+        private int port;
+        private String password;
+
+        public int getPort() {
+            return port;
+        }
+
+        public String getHost() {
+            return host;
+        }
+
+        public String getPassword() {
+            return password;
+        }
+
+        public String getRedisConnectionString() {
+            return "redis://:" + getPassword() + "@" + getHost() + ":" + getPort();
         }
     }
 }
