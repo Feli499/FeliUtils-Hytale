@@ -18,8 +18,7 @@ public class SqlInitializer {
 
     public SqlInitializer(HytaleLogger hytaleLogger, FeliUtilsConfig config) {
 
-        this.hytaleLogger = hytaleLogger.getSubLogger("SqlInitializer")
-                                        .getSubLogger("SqlInitializer");
+        this.hytaleLogger = hytaleLogger.getSubLogger("SqlInitializer");
         this.config = config;
     }
 
