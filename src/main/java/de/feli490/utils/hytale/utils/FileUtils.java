@@ -58,7 +58,11 @@ public class FileUtils {
         return loadOrCreate(path, EMPTY_ARRAY);
     }
 
-    private static Path loadOrCreate(Path path, String content) throws IOException {
+    public static Path loadOrCreate(Path path) throws IOException {
+        return loadOrCreate(path, "");
+    }
+
+    public static Path loadOrCreate(Path path, String content) throws IOException {
         var file = path.toFile();
 
         if (file.isDirectory())
@@ -68,9 +72,10 @@ public class FileUtils {
 
         if (!file.exists()) {
             file.createNewFile();
-            try (FileWriter writer = new FileWriter(file)) {
-                writer.write(content);
-            }
+            if (!content.isBlank())
+                try (FileWriter writer = new FileWriter(file)) {
+                    writer.write(content);
+                }
         }
         return file.toPath();
     }
